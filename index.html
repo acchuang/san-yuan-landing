@@ -453,9 +453,12 @@
       <!-- Preview result (hidden by default) -->
       <div id="demo-result" class="hidden mt-6">
         <div class="glass-card rounded-2xl p-6 md:p-8">
-          <div class="flex items-center gap-2 mb-6">
-            <div class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></div>
-            <span class="text-sm text-cosmic-muted">三系統預覽結果</span>
+          <div class="flex items-center justify-between mb-6">
+            <div class="flex items-center gap-2">
+              <div class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></div>
+              <span class="text-sm text-cosmic-muted">三系統預覽結果</span>
+            </div>
+            <span class="text-xs text-cosmic-muted" id="result-date"></span>
           </div>
 
           <div class="grid md:grid-cols-3 gap-4">
@@ -1054,12 +1057,28 @@
       }
     });
 
-    // Demo preview generator
+    // Demo preview generator with real calculations
     function generatePreview() {
       const btn = document.getElementById('demo-generate');
       const btnText = document.getElementById('demo-btn-text');
       const icon = document.getElementById('demo-icon');
       const result = document.getElementById('demo-result');
+
+      // Get inputs
+      const dateVal = document.getElementById('demo-date').value;
+      const timeVal = document.getElementById('demo-time').value;
+      const location = document.getElementById('demo-location').value;
+      const gender = document.getElementById('demo-gender').value;
+
+      if (!dateVal) {
+        alert('請選擇出生日期');
+        return;
+      }
+
+      // Parse date/time
+      const [year, month, day] = dateVal.split('-').map(Number);
+      const [hour, minute] = timeVal ? timeVal.split(':').map(Number) : [12, 0];
+      const birthDate = new Date(year, month - 1, day, hour, minute);
 
       // Loading state
       btn.disabled = true;
@@ -1069,6 +1088,33 @@
 
       // Simulate API delay
       setTimeout(() => {
+        // Run calculations
+        const western = calculateWestern(birthDate);
+        const bazi = calculateBaZi(birthDate);
+        const vedic = calculateVedic(birthDate);
+        const crossInsight = generateCrossInsight(bazi, western, vedic);
+
+        // Update DOM
+        document.getElementById('bazi-rizhu').textContent = bazi.riZhu;
+        document.getElementById('bazi-wuxing').textContent = bazi.wuXing;
+        document.getElementById('bazi-shishen').textContent = bazi.shiShen;
+        document.getElementById('bazi-note').textContent = bazi.note;
+
+        document.getElementById('west-sun').textContent = western.sun;
+        document.getElementById('west-moon').textContent = western.moon;
+        document.getElementById('west-asc').textContent = western.ascendant;
+        document.getElementById('west-note').textContent = western.note;
+
+        document.getElementById('vedic-asc').textContent = vedic.ascendant;
+        document.getElementById('vedic-nak').textContent = vedic.nakshatra;
+        document.getElementById('vedic-dasa').textContent = vedic.dasa;
+        document.getElementById('vedic-note').textContent = vedic.note;
+
+        document.getElementById('cross-note').textContent = crossInsight;
+
+        // Show birth date in result header
+        document.getElementById('result-date').textContent = `${year}年${month}月${day}日 ${hour.toString().padStart(2,'0')}:${minute.toString().padStart(2,'0')}`;
+
         // Reset button
         btn.disabled = false;
         btnText.textContent = '重新生成';
@@ -1091,6 +1137,214 @@
           }, i * 120);
         });
       }, 1400);
+    }
+
+    // === Western Astrology Calculations ===
+    function calculateWestern(date) {
+      const month = date.getMonth() + 1;
+      const day = date.getDate();
+
+      // Sun sign
+      const sunSigns = [
+        { name: '摩羯座', start: [1, 20] }, { name: '水瓶座', start: [2, 19] },
+        { name: '雙魚座', start: [3, 21] }, { name: '白羊座', start: [4, 20] },
+        { name: '金牛座', start: [5, 21] }, { name: '雙子座', start: [6, 21] },
+        { name: '巨蟹座', start: [7, 23] }, { name: '獅子座', start: [8, 23] },
+        { name: '處女座', start: [9, 23] }, { name: '天秤座', start: [10, 23] },
+        { name: '天蠍座', start: [11, 22] }, { name: '射手座', start: [12, 22] },
+        { name: '摩羯座', start: [13, 20] }
+      ];
+      let sun = '摩羯座';
+      for (let i = 0; i < sunSigns.length - 1; i++) {
+        const [sMonth, sDay] = sunSigns[i].start;
+        const [eMonth, eDay] = sunSigns[i + 1].start;
+        const afterStart = (month > sMonth) || (month === sMonth && day >= sDay);
+        const beforeEnd = (month < eMonth) || (month === eMonth && day < eDay);
+        if (afterStart && beforeEnd) {
+          sun = sunSigns[i].name;
+          break;
+        }
+      }
+
+      // Moon sign approximation (simplified - cycles every ~29.5 days from known reference)
+      const moonRef = new Date(2000, 0, 6, 18, 0); // Known full moon
+      const moonCycle = 29.53059;
+      const daysSinceRef = (date - moonRef) / (1000 * 60 * 60 * 24);
+      const moonPhase = (daysSinceRef % moonCycle + moonCycle) % moonCycle;
+      const moonSigns = ['獅子座', '處女座', '天秤座', '天蠍座', '射手座', '摩羯座', '水瓶座', '雙魚座', '白羊座', '金牛座', '雙子座', '巨蟹座'];
+      const moon = moonSigns[Math.floor((moonPhase / moonCycle) * 12) % 12];
+
+      // Ascendant approximation based on time of day
+      const hour = date.getHours();
+      const ascSigns = ['巨蟹座', '獅子座', '處女座', '天秤座', '天蠍座', '射手座', '摩羯座', '水瓶座', '雙魚座', '白羊座', '金牛座', '雙子座'];
+      const ascendant = ascSigns[hour % 12];
+
+      const sunTraits = {
+        '白羊座': '行動力強，熱情直接', '金牛座': '穩定持久，重視實際',
+        '雙子座': '靈活多變，好奇心強', '巨蟹座': '情緒細膩，重視家庭',
+        '獅子座': '自信大方，領導力強', '處女座': '謹慎細心，追求完美',
+        '天秤座': '注重和諧，公平客觀', '天蠍座': '深沉神秘，感知敏鋒',
+        '射手座': '自由開朗，喜愛探索', '摩羯座': '實際踏實，目標明確',
+        '水瓶座': '獨立理性，重視創新', '雙魚座': '情感豐富，直覺敏鋒'
+      };
+
+      return {
+        sun, moon, ascendant,
+        note: `太陽${sun}，核心特質是${sunTraits[sun] || '獨特而有個性'}。月亮${moon}影響情緒模式，上升${ascendant}決定外在表現。`
+      };
+    }
+
+    // === BaZi Calculations ===
+    function calculateBaZi(date) {
+      const heavenlyStems = ['甲', '乙', '丙', '丁', '戊', '己', '庚', '辛', '壬', '癸'];
+      const earthlyBranches = ['子', '丑', '寅', '卯', '辰', '巳', '午', '未', '申', '酉', '戌', '亥'];
+      const stemElements = { '甲': '木', '乙': '木', '丙': '火', '丁': '火', '戊': '土', '己': '土', '庚': '金', '辛': '金', '壬': '水', '癸': '水' };
+      const stemYinYang = { '甲': '陽', '乙': '陰', '丙': '陽', '丁': '陰', '戊': '陽', '己': '陰', '庚': '陽', '辛': '陰', '壬': '陽', '癸': '陰' };
+      const branchElements = { '子': '水', '丑': '土', '寅': '木', '卯': '木', '辰': '土', '巳': '火', '午': '火', '未': '土', '申': '金', '酉': '金', '戌': '土', '亥': '水' };
+
+      // Day pillar calculation (simplified, using 1900-01-31 as reference: JiaXu day)
+      const refDate = new Date(1900, 0, 31);
+      const diffDays = Math.floor((date - refDate) / (1000 * 60 * 60 * 24));
+      const stemIdx = ((diffDays % 10) + 10) % 10;
+      const branchIdx = ((diffDays % 12) + 12) % 12;
+      const stem = heavenlyStems[stemIdx];
+      const branch = earthlyBranches[branchIdx];
+
+      const element = stemElements[stem];
+      const yinYang = stemYinYang[stem];
+      const branchElement = branchElements[branch];
+
+      // Determine wu xing strength (simplified)
+      let wuXing = `${element}${yinYang}`;
+      if (element === branchElement) wuXing += `、${branchElement}旺`;
+
+      // Simplified ShiShen based on day stem
+      const shiShenMap = {
+        '甲': '偏印、比肩', '乙': '正印、劫財', '丙': '偏印、比肩', '丁': '正印、劫財',
+        '戊': '偏印、比肩', '己': '正印、劫財', '庚': '偏印、比肩', '辛': '正印、劫財',
+        '壬': '偏印、食神', '癸': '正印、傷官'
+      };
+
+      // Generate note
+      const stemTraits = {
+        '甲': '有領導力，個性直率', '乙': '柔韌適應，善於協調', '丙': '熱情直接，行動力強', '丁': '細心調微，重視細節',
+        '戊': '穩重厚實，值得信賴', '己': '包容力強，善於觀察', '庚': '果斷堅毅，追求正義', '辛': '精緻敏感，有藝術天分',
+        '壬': '獨立理性，思維靈活', '癸': '柔和晶蟹，有智慧'
+      };
+
+      return {
+        riZhu: stem + branch,
+        wuXing: wuXing,
+        shiShen: shiShenMap[stem] || '正印、比肩',
+        note: `日主${stem}${branch}（${yinYang}${element}），${stemTraits[stem]}。地支${branch}為${branchElement}，八字格局顯現個性獨特。`
+      };
+    }
+
+    // === Vedic Astrology Calculations ===
+    function calculateVedic(date) {
+      const month = date.getMonth() + 1;
+      const day = date.getDate();
+
+      // Apply ayanamsa offset (~24°) to get sidereal positions
+      const sunSigns = [
+        { name: '摩羯座', start: [1, 14] }, { name: '水瓶座', start: [2, 13] },
+        { name: '雙魚座', start: [3, 15] }, { name: '白羊座', start: [4, 14] },
+        { name: '金牛座', start: [5, 15] }, { name: '雙子座', start: [6, 15] },
+        { name: '巨蟹座', start: [7, 17] }, { name: '獅子座', start: [8, 17] },
+        { name: '處女座', start: [9, 17] }, { name: '天秤座', start: [10, 17] },
+        { name: '天蠍座', start: [11, 16] }, { name: '射手座', start: [12, 16] },
+        { name: '摩羯座', start: [13, 14] }
+      ];
+
+      let ascendant = '摩羯座';
+      for (let i = 0; i < sunSigns.length - 1; i++) {
+        const [sMonth, sDay] = sunSigns[i].start;
+        const [eMonth, eDay] = sunSigns[i + 1].start;
+        const afterStart = (month > sMonth) || (month === sMonth && day >= sDay);
+        const beforeEnd = (month < eMonth) || (month === eMonth && day < eDay);
+        if (afterStart && beforeEnd) {
+          ascendant = sunSigns[i].name;
+          break;
+        }
+      }
+
+      // Moon nakshatra (approximation)
+      const nakshatras = ['Ashwini', 'Bharani', 'Krittika', 'Rohini', 'Mrigashira', 'Ardra',
+        'Punarvasu', 'Pushya', 'Ashlesha', 'Magha', 'Purva Phalguni', 'Uttara Phalguni',
+        'Hasta', 'Chitra', 'Swati', 'Vishakha', 'Anuradha', 'Jyeshtha', 'Mula',
+        'Purva Ashadha', 'Uttara Ashadha', 'Shravana', 'Dhanishta', 'Shatabhisha',
+        'Purva Bhadrapada', 'Uttara Bhadrapada', 'Revati'];
+      const moonRef = new Date(2000, 0, 6);
+      const daysSince = (date - moonRef) / (1000 * 60 * 60 * 24);
+      const nakshatra = nakshatras[Math.floor(((daysSince % 27.3) + 27.3) % 27.3 / 27.3 * 27) % 27];
+
+      // Dasa (simplified - based on moon nakshatra lord)
+      const dasaLords = ['火星', '金星', '土星', '月亮', '太陽', '水星', '木星', '土星', '水星'];
+      const dasa = dasaLords[nakshatras.indexOf(nakshatra) % 9];
+
+      const signElements = {
+        '白羊座': '火', '金牛座': '土', '雙子座': '風', '巨蟹座': '水',
+        '獅子座': '火', '處女座': '土', '天秤座': '風', '天蠍座': '水',
+        '射手座': '火', '摩羯座': '土', '水瓶座': '風', '雙魚座': '水'
+      };
+
+      return {
+        ascendant,
+        nakshatra,
+        dasa,
+        note: `上升${ascendant}（${signElements[ascendant]}象），月亮落在${nakshatra}。當前${dasa} Dasa 中，運勢重點在${dasa === '土星' ? '事業穩定與長期規劃' : dasa === '木星' ? '成長與學習' : dasa === '火星' ? '行動力與競爭' : dasa === '水星' ? '溝通與商務' : dasa === '金星' ? '財富與價值觀' : '內在成長與自我認知'}。`
+      };
+    }
+
+    // === Cross-Reference Insight Generator ===
+    function generateCrossInsight(bazi, western, vedic) {
+      const baziElement = bazi.wuXing.charAt(0);
+      const signElements = {
+        '白羊座': '火', '金牛座': '土', '雙子座': '風', '巨蟹座': '水',
+        '獅子座': '火', '處女座': '土', '天秤座': '風', '天蠍座': '水',
+        '射手座': '火', '摩羯座': '土', '水瓶座': '風', '雙魚座': '水'
+      };
+      const westElement = signElements[western.sun] || '風';
+      const vedicElement = signElements[vedic.ascendant] || '土';
+
+      // Check for overlaps
+      const elements = [baziElement, westElement, vedicElement];
+      const uniqueElements = [...new Set(elements)];
+
+      let insight = '';
+
+      if (uniqueElements.length === 1) {
+        // All three agree on element
+        const elementMap = { '木': '創造力與成長', '火': '熱情與行動力', '土': '穩定與實際', '金': '果斷與精緻', '水': '靈活與感知', '風': '溝通與思維' };
+        insight = `三系統元素高度一致：八字${baziElement}、西方太陽${westElement}、吠陀上升${vedicElement}皆為${baziElement}。這表示你的核心特質非常集中，${elementMap[baziElement] || '個性獨特而明確'}是你最大的優勢。`;
+      } else if (uniqueElements.length === 2) {
+        // Two agree, one differs
+        const [e1, e2] = uniqueElements;
+        const count1 = elements.filter(e => e === e1).length;
+        const majority = count1 >= 2 ? e1 : e2;
+        const minority = count1 >= 2 ? e2 : e1;
+        insight = `兩個系統指向${majority}：八字和${count1 >= 2 ? '西方太陽' : '吠陀上升'}都為${majority}，但${minority}的影響也不可忽視。${majority}給你${majority === '火' || majority === '木' ? '主動性與熱情' : majority === '水' || majority === '風' ? '靈活性與變通能力' : '穩定性與执行力'}，${minority}則提供了補充的角度。`;
+      } else {
+        // All three different
+        insight = `三系統各有重點：八字${baziElement}、西方太陽${westElement}、吠陀上升${vedicElement}。元素分散代表你是多元發展的人，不同領域有不同的優勢。建議讓各系統指導其擅長的領域。`;
+      }
+
+      // Add career/relationship advice based on overlap
+      const careerMap = {
+        '木': '創業、教育、文創',
+        '火': '營銷、表演、領導',
+        '土': '金融、房地產、管理',
+        '金': '技術、金融、法律',
+        '水': '媒體、資訊、心理',
+        '風': '傳播、設計、咨詢'
+      };
+
+      if (uniqueElements.length <= 2) {
+        const mainElement = uniqueElements[0];
+        insight += `職業方向可考慮${careerMap[mainElement] || '多元發展'}。`;
+      }
+
+      return insight;
     }
   </script>
 </body>
