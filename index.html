@@ -1,0 +1,1097 @@
+<!DOCTYPE html>
+<html lang="zh-Hant" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>三垣 San-Yuan — 八字 · 西方占星 · 吠陀占星</title>
+  <meta name="description" content="三垣 San-Yuan: 三系統合一命盤生成器。八字、西方占星、吠陀占星一次解讀。">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            cosmic: {
+              black: '#000000',
+              void: '#050508',
+              deep: '#0A0E1A',
+              navy: '#0F172A',
+              slate: '#1E293B',
+              purple: '#7C3AED',
+              violet: '#A78BFA',
+              gold: '#F59E0B',
+              amber: '#FBBF24',
+              ivory: '#F8FAFC',
+              muted: '#94A3B8',
+            }
+          },
+          fontFamily: {
+            serif: ['"Noto Serif TC"', 'serif'],
+            sans: ['Inter', 'sans-serif'],
+          },
+          animation: {
+            'float': 'float 6s ease-in-out infinite',
+            'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+            'twinkle': 'twinkle 3s ease-in-out infinite',
+            'glow': 'glow 2s ease-in-out infinite alternate',
+          },
+          keyframes: {
+            float: {
+              '0%, 100%': { transform: 'translateY(0px)' },
+              '50%': { transform: 'translateY(-20px)' },
+            },
+            twinkle: {
+              '0%, 100%': { opacity: '0.3' },
+              '50%': { opacity: '1' },
+            },
+            glow: {
+              '0%': { boxShadow: '0 0 5px rgba(124,58,237,0.3)' },
+              '100%': { boxShadow: '0 0 20px rgba(124,58,237,0.6), 0 0 40px rgba(245,158,11,0.2)' },
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      background: #000000;
+      color: #F8FAFC;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .starfield {
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .star {
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      background: white;
+      border-radius: 50%;
+      animation: twinkle 3s ease-in-out infinite;
+    }
+
+    .star:nth-child(3n) { background: #A78BFA; }
+    .star:nth-child(5n) { background: #FBBF24; }
+    .star:nth-child(7n) { animation-duration: 5s; }
+    .star:nth-child(11n) { animation-duration: 2s; }
+
+    .gradient-text {
+      background: linear-gradient(135deg, #F59E0B 0%, #A78BFA 50%, #7C3AED 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .glass-card {
+      background: rgba(15, 23, 42, 0.6);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(124, 58, 237, 0.15);
+      transition: all 0.3s ease;
+    }
+
+    .glass-card:hover {
+      border-color: rgba(245, 158, 11, 0.3);
+      transform: translateY(-4px);
+      box-shadow: 0 20px 40px rgba(124, 58, 237, 0.15);
+    }
+
+    .nav-glass {
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(124, 58, 237, 0.1);
+    }
+
+    .cta-glow {
+      background: linear-gradient(135deg, #7C3AED, #F59E0B);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cta-glow::before {
+      content: '';
+      position: absolute;
+      top: -50%; left: -50%;
+      width: 200%; height: 200%;
+      background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
+      transform: rotate(45deg);
+      transition: all 0.5s;
+    }
+
+    .cta-glow:hover::before {
+      left: 100%;
+    }
+
+    .orbit-ring {
+      border: 1px solid rgba(124, 58, 237, 0.2);
+      border-radius: 50%;
+      position: absolute;
+      animation: spin 20s linear infinite;
+    }
+
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    .feature-icon {
+      background: linear-gradient(135deg, rgba(124,58,237,0.2), rgba(245,158,11,0.2));
+      border: 1px solid rgba(124,58,237,0.3);
+    }
+
+    .divider-glow {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(124,58,237,0.5), rgba(245,158,11,0.5), transparent);
+    }
+
+    .testimonial-card {
+      position: relative;
+    }
+
+    .testimonial-card::before {
+      content: '"';
+      position: absolute;
+      top: -10px;
+      left: 16px;
+      font-family: 'Noto Serif TC', serif;
+      font-size: 4rem;
+      color: rgba(245, 158, 11, 0.2);
+      line-height: 1;
+      pointer-events: none;
+    }
+
+    .popular-badge {
+      position: absolute;
+      top: -12px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: linear-gradient(135deg, #F59E0B, #FBBF24);
+      color: #0A0E1A;
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 4px 16px;
+      border-radius: 999px;
+      white-space: nowrap;
+    }
+
+    .pricing-card-popular {
+      border-color: rgba(245, 158, 11, 0.4);
+      box-shadow: 0 0 30px rgba(245, 158, 11, 0.1);
+      transform: scale(1.02);
+    }
+
+    .pricing-card-popular:hover {
+      border-color: rgba(245, 158, 11, 0.6);
+      box-shadow: 0 0 40px rgba(245, 158, 11, 0.2);
+    }
+
+    .trust-footer-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.5);
+      border: 1px solid rgba(124, 58, 237, 0.15);
+      font-size: 0.75rem;
+      color: #94A3B8;
+    }
+
+    /* Reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+      .star, .orbit-ring { animation: none; }
+      .glass-card { transition: none; }
+    }
+  </style>
+</head>
+<body class="antialiased relative">
+  <!-- Starfield Background -->
+  <div class="starfield" id="starfield"></div>
+
+  <!-- Navigation -->
+  <nav class="nav-glass fixed top-0 w-full z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-16">
+        <div class="flex items-center gap-3">
+          <div class="w-8 h-8 rounded-full bg-gradient-to-br from-cosmic-purple to-cosmic-gold flex items-center justify-center">
+            <span class="text-white font-serif text-sm font-bold">垣</span>
+          </div>
+          <span class="font-serif text-xl font-bold gradient-text">三垣</span>
+        </div>
+        <div class="hidden md:flex items-center gap-8">
+          <a href="#features" class="text-cosmic-muted hover:text-cosmic-ivory transition text-sm">特色</a>
+          <a href="#systems" class="text-cosmic-muted hover:text-cosmic-ivory transition text-sm">三系統</a>
+          <a href="#preview" class="text-cosmic-muted hover:text-cosmic-ivory transition text-sm">預覽</a>
+          <a href="#learn" class="text-cosmic-muted hover:text-cosmic-ivory transition text-sm">學堂</a>
+          <a href="https://sanyuan.oilygold.xyz" target="_blank" class="cta-glow px-5 py-2 rounded-full text-sm font-medium text-white hover:shadow-lg hover:shadow-purple-500/30 transition">
+            開始解盤
+          </a>
+        </div>
+        <button id="mobile-menu-btn" class="md:hidden text-cosmic-ivory" aria-label="Open menu">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+        </button>
+      </div>
+    </div>
+    <!-- Mobile menu -->
+    <div id="mobile-menu" class="hidden md:hidden nav-glass border-t border-purple-500/10">
+      <div class="px-4 py-4 space-y-3">
+        <a href="#features" class="block text-cosmic-muted hover:text-cosmic-ivory transition">特色</a>
+        <a href="#systems" class="block text-cosmic-muted hover:text-cosmic-ivory transition">三系統</a>
+        <a href="#preview" class="block text-cosmic-muted hover:text-cosmic-ivory transition">預覽</a>
+        <a href="#learn" class="block text-cosmic-muted hover:text-cosmic-ivory transition">學堂</a>
+        <a href="https://sanyuan.oilygold.xyz" target="_blank" class="block cta-glow px-5 py-2 rounded-full text-center text-sm font-medium text-white">開始解盤</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="relative min-h-screen flex items-center justify-center pt-16 overflow-hidden">
+    <!-- Orbital decorations -->
+    <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+      <div class="orbit-ring w-[500px] h-[500px] opacity-20" style="animation-duration: 30s;"></div>
+      <div class="orbit-ring w-[350px] h-[350px] opacity-15" style="animation-duration: 20s; animation-direction: reverse;"></div>
+      <div class="orbit-ring w-[600px] h-[600px] opacity-10" style="animation-duration: 40s;"></div>
+    </div>
+
+    <div class="relative z-10 max-w-5xl mx-auto px-4 text-center">
+      <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full glass-card mb-8 animate-float">
+        <span class="w-2 h-2 rounded-full bg-cosmic-gold animate-pulse"></span>
+        <span class="text-sm text-cosmic-muted">三系統合一命盤，即時生成</span>
+      </div>
+
+      <h1 class="font-serif text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold mb-6 leading-tight">
+        <span class="gradient-text">三垣</span>
+      </h1>
+      <p class="font-serif text-2xl sm:text-3xl md:text-4xl text-cosmic-ivory mb-4">
+        八字、西方占星、吠陀占星
+      </p>
+      <p class="text-lg md:text-xl text-cosmic-muted max-w-2xl mx-auto mb-10 leading-relaxed">
+        輸入出生資料，一次解讀三大命理系統。東方的天干地支、西方的黃道十二宮、吠陀的二十八宿與 Dasa 周期，各自算一遍，再對照看說法有沒有重疊。
+      </p>
+
+      <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+        <a href="https://sanyuan.oilygold.xyz" target="_blank" class="cta-glow px-8 py-4 rounded-full text-lg font-semibold text-white hover:shadow-xl hover:shadow-purple-500/40 transition transform hover:scale-105">
+          免費生成命盤
+        </a>
+        <a href="#systems" class="px-8 py-4 rounded-full text-lg font-medium text-cosmic-ivory border border-cosmic-purple/30 hover:border-cosmic-gold/50 hover:bg-cosmic-purple/10 transition">
+          了解更多
+        </a>
+      </div>
+
+      <!-- Trust badges row -->
+      <div class="mt-8 flex flex-wrap justify-center gap-4 text-sm text-cosmic-muted">
+        <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full glass-card">
+          <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+          100% 隱私保護
+        </span>
+        <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full glass-card">
+          <svg class="w-4 h-4 text-cosmic-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+          即時生成
+        </span>
+        <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full glass-card">
+          <svg class="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          不用綁信用卡
+        </span>
+      </div>
+
+      <!-- Stats -->
+      <div class="mt-16 grid grid-cols-2 md:grid-cols-4 gap-6 max-w-2xl mx-auto">
+        <div class="text-center">
+          <div class="text-2xl md:text-3xl font-bold gradient-text">3</div>
+          <div class="text-sm text-cosmic-muted mt-1">命理系統</div>
+        </div>
+        <div class="text-center">
+          <div class="text-2xl md:text-3xl font-bold gradient-text">60+</div>
+          <div class="text-sm text-cosmic-muted mt-1">命盤數據點</div>
+        </div>
+        <div class="text-center">
+          <div class="text-2xl md:text-3xl font-bold gradient-text">即時</div>
+          <div class="text-sm text-cosmic-muted mt-1">AI 解讀</div>
+        </div>
+        <div class="text-center">
+          <div class="text-2xl md:text-3xl font-bold gradient-text">10K+</div>
+          <div class="text-sm text-cosmic-muted mt-1">已生成命盤</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scroll indicator -->
+    <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
+      <svg class="w-6 h-6 text-cosmic-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/></svg>
+    </div>
+  </section>
+
+  <div class="divider-glow max-w-4xl mx-auto"></div>
+
+  <!-- Social Proof Section -->
+  <section class="relative z-10 py-20 px-4">
+    <div class="max-w-5xl mx-auto">
+      <div class="text-center mb-12">
+        <p class="text-sm text-cosmic-muted uppercase tracking-widest mb-2">使用者怎麼說</p>
+        <div class="flex items-center justify-center gap-2">
+          <span class="text-cosmic-gold text-lg">★★★★★</span>
+          <span class="text-cosmic-ivory font-bold">4.9/5</span>
+          <span class="text-cosmic-muted text-sm">來自 1,200+ 則評價</span>
+        </div>
+      </div>
+      <div class="grid md:grid-cols-3 gap-6">
+        <div class="glass-card rounded-2xl p-8 testimonial-card">
+          <p class="text-cosmic-ivory text-sm leading-relaxed mb-5 pt-4">
+            八字和星座說法不一樣，但都說中了我今年換工作。三種對照看下來，反而更有把握。
+          </p>
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-full bg-gradient-to-br from-red-500 to-orange-500 flex items-center justify-center text-white text-xs font-bold">林</div>
+            <div>
+              <div class="text-sm text-cosmic-ivory">林小姐</div>
+              <div class="text-xs text-cosmic-muted">臺北，行銷經理</div>
+            </div>
+          </div>
+        </div>
+        <div class="glass-card rounded-2xl p-8 testimonial-card">
+          <p class="text-cosmic-ivory text-sm leading-relaxed mb-5 pt-4">
+            我是命理師，這個工具幫我省下大量排盤時間，客戶都說準。現在算八字、西洋盤、吠陀盤不用切三個軟體。
+          </p>
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center text-white text-xs font-bold">陳</div>
+            <div>
+              <div class="text-sm text-cosmic-ivory">陳老師</div>
+              <div class="text-xs text-cosmic-muted">高雄，專業命理師</div>
+            </div>
+          </div>
+        </div>
+        <div class="glass-card rounded-2xl p-8 testimonial-card">
+          <p class="text-cosmic-ivory text-sm leading-relaxed mb-5 pt-4">
+            本來只是好奇試試，結果跟我之前花錢算的差不多。而且三種都有，不用各自找不同師傅。
+          </p>
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-full bg-gradient-to-br from-emerald-500 to-teal-500 flex items-center justify-center text-white text-xs font-bold">王</div>
+            <div>
+              <div class="text-sm text-cosmic-ivory">王先生</div>
+              <div class="text-xs text-cosmic-muted">墨爾本，軟體工程師</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Trust metrics row -->
+      <div class="mt-10 flex flex-wrap justify-center gap-8 text-center">
+        <div>
+          <div class="text-xl font-bold text-cosmic-ivory">30+</div>
+          <div class="text-xs text-cosmic-muted">國家使用</div>
+        </div>
+        <div class="w-px h-10 bg-cosmic-purple/20 hidden sm:block"></div>
+        <div>
+          <div class="text-xl font-bold text-cosmic-ivory">3 位</div>
+          <div class="text-xs text-cosmic-muted">專家命理師驗證</div>
+        </div>
+        <div class="w-px h-10 bg-cosmic-purple/20 hidden sm:block"></div>
+        <div>
+          <div class="text-xl font-bold text-cosmic-ivory">0</div>
+          <div class="text-xs text-cosmic-muted">資料外洩記錄</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider-glow max-w-4xl mx-auto"></div>
+
+  <!-- Interactive Demo Widget -->
+  <section id="preview" class="relative z-10 py-20 px-4">
+    <div class="max-w-3xl mx-auto">
+      <div class="text-center mb-10">
+        <h2 class="font-serif text-3xl md:text-4xl font-bold text-cosmic-ivory mb-3">輸入資料，先看預覽</h2>
+        <p class="text-cosmic-muted max-w-xl mx-auto">不用註冊，輸入出生時間和地點，立即看三系統對照。</p>
+      </div>
+
+      <div class="glass-card rounded-2xl p-6 md:p-8">
+        <!-- Input form -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+          <div class="col-span-2 md:col-span-1">
+            <label class="block text-xs text-cosmic-muted mb-1.5">出生日期</label>
+            <input type="date" id="demo-date" class="w-full bg-cosmic-deep/80 border border-cosmic-purple/20 rounded-lg px-3 py-2.5 text-sm text-cosmic-ivory focus:outline-none focus:border-cosmic-gold/50 focus:ring-1 focus:ring-cosmic-gold/20" value="1990-01-30">
+          </div>
+          <div>
+            <label class="block text-xs text-cosmic-muted mb-1.5">時間</label>
+            <input type="time" id="demo-time" class="w-full bg-cosmic-deep/80 border border-cosmic-purple/20 rounded-lg px-3 py-2.5 text-sm text-cosmic-ivory focus:outline-none focus:border-cosmic-gold/50" value="16:30">
+          </div>
+          <div>
+            <label class="block text-xs text-cosmic-muted mb-1.5">地點</label>
+            <select id="demo-location" class="w-full bg-cosmic-deep/80 border border-cosmic-purple/20 rounded-lg px-3 py-2.5 text-sm text-cosmic-ivory focus:outline-none focus:border-cosmic-gold/50 appearance-none cursor-pointer">
+              <option value="taipei">臺北</option>
+              <option value="taichung">臺中</option>
+              <option value="kaohsiung">高雄</option>
+              <option value="hongkong">香港</option>
+              <option value="melbourne" selected>墨爾本</option>
+              <option value="other">其他</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs text-cosmic-muted mb-1.5">性別</label>
+            <select id="demo-gender" class="w-full bg-cosmic-deep/80 border border-cosmic-purple/20 rounded-lg px-3 py-2.5 text-sm text-cosmic-ivory focus:outline-none focus:border-cosmic-gold/50 appearance-none cursor-pointer">
+              <option value="male" selected>男</option>
+              <option value="female">女</option>
+            </select>
+          </div>
+        </div>
+
+        <button id="demo-generate" onclick="generatePreview()" class="cta-glow w-full py-3.5 rounded-xl text-base font-semibold text-white hover:shadow-lg hover:shadow-purple-500/30 transition transform hover:scale-[1.02] flex items-center justify-center gap-2">
+          <svg id="demo-icon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+          <span id="demo-btn-text">生成預覽命盤</span>
+        </button>
+        <p class="text-xs text-cosmic-muted text-center mt-3">預覽為模擬結果，完整命盤需登入</p>
+      </div>
+
+      <!-- Preview result (hidden by default) -->
+      <div id="demo-result" class="hidden mt-6">
+        <div class="glass-card rounded-2xl p-6 md:p-8">
+          <div class="flex items-center gap-2 mb-6">
+            <div class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></div>
+            <span class="text-sm text-cosmic-muted">三系統預覽結果</span>
+          </div>
+
+          <div class="grid md:grid-cols-3 gap-4">
+            <!-- BaZi preview -->
+            <div class="rounded-xl p-5" style="background: rgba(220, 38, 38, 0.08); border: 1px solid rgba(220, 38, 38, 0.2);">
+              <div class="flex items-center gap-2 mb-4">
+                <span class="text-red-400 font-serif font-bold">八字</span>
+                <span class="text-xs text-cosmic-muted">BaZi</span>
+              </div>
+              <div class="space-y-3 text-sm">
+                <div class="flex justify-between">
+                  <span class="text-cosmic-muted">日主</span>
+                  <span class="text-cosmic-ivory font-medium" id="bazi-rizhu">壬水</span>
+                </div>
+                <div class="flex justify-between">
+                  <span class="text-cosmic-muted">五行</span>
+                  <span class="text-cosmic-ivory font-medium" id="bazi-wuxing">水旺</span>
+                </div>
+                <div class="flex justify-between">
+                  <span class="text-cosmic-muted">十神</span>
+                  <span class="text-cosmic-ivory font-medium" id="bazi-shishen">偏印、食神</span>
+                </div>
+              </div>
+              <div class="mt-4 pt-4 border-t border-red-500/10">
+                <p class="text-xs text-cosmic-muted leading-relaxed" id="bazi-note">
+                  日主強勁，個性獨立，遷移宮有正財，財運穩定。
+                </p>
+              </div>
+            </div>
+
+            <!-- Western preview -->
+            <div class="rounded-xl p-5" style="background: rgba(59, 130, 246, 0.08); border: 1px solid rgba(59, 130, 246, 0.2);">
+              <div class="flex items-center gap-2 mb-4">
+                <span class="text-blue-400 font-bold">西方占星</span>
+                <span class="text-xs text-cosmic-muted">Western</span>
+              </div>
+              <div class="space-y-3 text-sm">
+                <div class="flex justify-between">
+                  <span class="text-cosmic-muted">太陽星座</span>
+                  <span class="text-cosmic-ivory font-medium" id="west-sun">水瓶座</span>
+                </div>
+                <div class="flex justify-between">
+                  <span class="text-cosmic-muted">月亮星座</span>
+                  <span class="text-cosmic-ivory font-medium" id="west-moon">巨蟹座</span>
+                </div>
+                <div class="flex justify-between">
+                  <span class="text-cosmic-muted">上升星座</span>
+                  <span class="text-cosmic-ivory font-medium" id="west-asc">獅子座</span>
+                </div>
+              </div>
+              <div class="mt-4 pt-4 border-t border-blue-500/10">
+                <p class="text-xs text-cosmic-muted leading-relaxed" id="west-note">
+                  太陽水瓶獨立理性，月亮巨蟹情緒細膩，上升獅子外向自信。
+                </p>
+              </div>
+            </div>
+
+            <!-- Vedic preview -->
+            <div class="rounded-xl p-5" style="background: rgba(245, 158, 11, 0.08); border: 1px solid rgba(245, 158, 11, 0.2);">
+              <div class="flex items-center gap-2 mb-4">
+                <span class="text-amber-400 font-bold">吠陀占星</span>
+                <span class="text-xs text-cosmic-muted">Vedic</span>
+              </div>
+              <div class="space-y-3 text-sm">
+                <div class="flex justify-between">
+                  <span class="text-cosmic-muted">上升</span>
+                  <span class="text-cosmic-ivory font-medium" id="vedic-asc">獅子座</span>
+                </div>
+                <div class="flex justify-between">
+                  <span class="text-cosmic-muted">月亮Nakshatra</span>
+                  <span class="text-cosmic-ivory font-medium" id="vedic-nak">Pushya</span>
+                </div>
+                <div class="flex justify-between">
+                  <span class="text-cosmic-muted">Maha Dasa</span>
+                  <span class="text-cosmic-ivory font-medium" id="vedic-dasa">土星</span>
+                </div>
+              </div>
+              <div class="mt-4 pt-4 border-t border-amber-500/10">
+                <p class="text-xs text-cosmic-muted leading-relaxed" id="vedic-note">
+                  土星 Dasa 中，事業步調穩定，適合長期規劃。
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Cross-reference insight -->
+          <div class="mt-6 rounded-xl p-5 border border-cosmic-gold/20" style="background: rgba(245, 158, 11, 0.05);">
+            <div class="flex items-start gap-3">
+              <svg class="w-5 h-5 text-cosmic-gold mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+              <div>
+                <p class="text-sm text-cosmic-ivory font-medium mb-1">交叉驗證觀察</p>
+                <p class="text-sm text-cosmic-muted leading-relaxed" id="cross-note">
+                  八字日主壬水（陽水）與西方太陽水瓶座（氣象星座）特質重疊：獨立、理性、重視自由。吠陀上升獅子（火象）則補充了行動力與領導力。三系統共同指向：個性獨立但有情緒深度，適合創業或自由職業。
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- CTA to full reading -->
+          <div class="mt-6 text-center">
+            <p class="text-sm text-cosmic-muted mb-4">這是預覽版。完整命盤包含大運、流年、合盤、AI 解讀。</p>
+            <a href="https://sanyuan.oilygold.xyz" target="_blank" class="cta-glow px-8 py-3 rounded-full text-base font-semibold text-white hover:shadow-xl hover:shadow-purple-500/40 transition transform hover:scale-105 inline-flex items-center gap-2">
+              看完整命盤
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider-glow max-w-4xl mx-auto"></div>
+
+  <!-- Features Section -->
+  <section id="features" class="relative z-10 py-24 px-4">
+    <div class="max-w-6xl mx-auto">
+      <div class="text-center mb-16">
+        <h2 class="font-serif text-3xl md:text-4xl font-bold text-cosmic-ivory mb-4">三垣有什麼不一樣？</h2>
+        <p class="text-cosmic-muted max-w-2xl mx-auto">其他平台只給你一種說法，我們把三種放在一起對照。</p>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-8">
+        <!-- Feature 1 -->
+        <div class="glass-card rounded-2xl p-8">
+          <div class="feature-icon w-14 h-14 rounded-xl flex items-center justify-center mb-6">
+            <svg class="w-7 h-7 text-cosmic-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+          </div>
+          <h3 class="text-xl font-bold text-cosmic-ivory mb-3">三系統交叉驗證</h3>
+          <p class="text-cosmic-muted leading-relaxed">八字四柱、西方行星位置、吠陀 Nakshatra 三種同時排盤。當兩個系統說同一件事，你可以比較有信心；當說法不同，你就知道這件事還有變數。</p>
+        </div>
+
+        <!-- Feature 2 -->
+        <div class="glass-card rounded-2xl p-8">
+          <div class="feature-icon w-14 h-14 rounded-xl flex items-center justify-center mb-6">
+            <svg class="w-7 h-7 text-cosmic-violet" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
+          </div>
+          <h3 class="text-xl font-bold text-cosmic-ivory mb-3">精確天文計算</h3>
+          <p class="text-cosmic-muted leading-relaxed">用 PyEphem 算出真實行星位置、宮位和相位，支援出生地經緯度和時區校正。不是查表，是實際算。</p>
+        </div>
+
+        <!-- Feature 3 -->
+        <div class="glass-card rounded-2xl p-8">
+          <div class="feature-icon w-14 h-14 rounded-xl flex items-center justify-center mb-6">
+            <svg class="w-7 h-7 text-cosmic-purple" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+          </div>
+          <h3 class="text-xl font-bold text-cosmic-ivory mb-3">AI 解讀</h3>
+          <p class="text-cosmic-muted leading-relaxed">升級版有 AI 幫你整理命盤重點，不用自己啃乾巴巴的術語。AI 不會替代命理師，但讓你快速知道哪裡值得深入問。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider-glow max-w-4xl mx-auto"></div>
+
+  <!-- Three Systems Section -->
+  <section id="systems" class="relative z-10 py-24 px-4">
+    <div class="max-w-6xl mx-auto">
+      <div class="text-center mb-16">
+        <h2 class="font-serif text-3xl md:text-4xl font-bold text-cosmic-ivory mb-4">三大命理系統</h2>
+        <p class="text-cosmic-muted max-w-2xl mx-auto">東方、西方、印度，各自發展了幾千年的命理學，一次看齊。</p>
+      </div>
+
+      <div class="grid lg:grid-cols-3 gap-8">
+        <!-- BaZi -->
+        <div class="glass-card rounded-2xl overflow-hidden group">
+          <div class="h-2 bg-gradient-to-r from-red-600 via-yellow-500 to-gray-400"></div>
+          <div class="p-8">
+            <div class="flex items-center gap-3 mb-6">
+              <div class="w-12 h-12 rounded-full bg-red-900/30 border border-red-500/30 flex items-center justify-center">
+                <span class="font-serif text-2xl text-red-400">八字</span>
+              </div>
+              <div>
+                <h3 class="text-xl font-bold text-cosmic-ivory">四柱八字</h3>
+                <p class="text-sm text-cosmic-muted">Chinese BaZi</p>
+              </div>
+            </div>
+            <ul class="space-y-3 text-cosmic-muted">
+              <li class="flex items-start gap-3">
+                <span class="text-red-400 mt-1">●</span>
+                <span>年柱、月柱、日柱、時柱四柱排盤</span>
+              </li>
+              <li class="flex items-start gap-3">
+                <span class="text-red-400 mt-1">●</span>
+                <span>天干地支與五行分析</span>
+              </li>
+              <li class="flex items-start gap-3">
+                <span class="text-red-400 mt-1">●</span>
+                <span>十神關係與藏干解析</span>
+              </li>
+              <li class="flex items-start gap-3">
+                <span class="text-red-400 mt-1">●</span>
+                <span>日柱論命與日主強弱</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Western -->
+        <div class="glass-card rounded-2xl overflow-hidden group">
+          <div class="h-2 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500"></div>
+          <div class="p-8">
+            <div class="flex items-center gap-3 mb-6">
+              <div class="w-12 h-12 rounded-full bg-blue-900/30 border border-blue-500/30 flex items-center justify-center">
+                <svg class="w-6 h-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+              </div>
+              <div>
+                <h3 class="text-xl font-bold text-cosmic-ivory">西方占星</h3>
+                <p class="text-sm text-cosmic-muted">Western Astrology</p>
+              </div>
+            </div>
+            <ul class="space-y-3 text-cosmic-muted">
+              <li class="flex items-start gap-3">
+                <span class="text-blue-400 mt-1">●</span>
+                <span>黃道十二宮行星位置</span>
+              </li>
+              <li class="flex items-start gap-3">
+                <span class="text-blue-400 mt-1">●</span>
+                <span>上升星座與十二宮位</span>
+              </li>
+              <li class="flex items-start gap-3">
+                <span class="text-blue-400 mt-1">●</span>
+                <span>主要相位分析（合、六分、四分、三分、對分）</span>
+              </li>
+              <li class="flex items-start gap-3">
+                <span class="text-blue-400 mt-1">●</span>
+                <span>月相與太陽回歸</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Vedic -->
+        <div class="glass-card rounded-2xl overflow-hidden group">
+          <div class="h-2 bg-gradient-to-r from-amber-500 via-orange-500 to-red-500"></div>
+          <div class="p-8">
+            <div class="flex items-center gap-3 mb-6">
+              <div class="w-12 h-12 rounded-full bg-amber-900/30 border border-amber-500/30 flex items-center justify-center">
+                <svg class="w-6 h-6 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+              </div>
+              <div>
+                <h3 class="text-xl font-bold text-cosmic-ivory">吠陀占星</h3>
+                <p class="text-sm text-cosmic-muted">Vedic / Jyotish</p>
+              </div>
+            </div>
+            <ul class="space-y-3 text-cosmic-muted">
+              <li class="flex items-start gap-3">
+                <span class="text-amber-400 mt-1">●</span>
+                <span>恒星黃道與 Nakshatra（二十八宿）</span>
+              </li>
+              <li class="flex items-start gap-3">
+                <span class="text-amber-400 mt-1">●</span>
+                <span>Navamsa (D9) 九分盤</span>
+              </li>
+              <li class="flex items-start gap-3">
+                <span class="text-amber-400 mt-1">●</span>
+                <span>Maha Dasa 大運週期計算</span>
+              </li>
+              <li class="flex items-start gap-3">
+                <span class="text-amber-400 mt-1">●</span>
+                <span>Transit 行運分析</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider-glow max-w-4xl mx-auto"></div>
+
+  <!-- Knowledge Hub Section -->
+  <section id="learn" class="relative z-10 py-24 px-4">
+    <div class="max-w-6xl mx-auto">
+      <div class="text-center mb-16">
+        <p class="text-sm text-cosmic-muted uppercase tracking-widest mb-2">三垣學堂</p>
+        <h2 class="font-serif text-3xl md:text-4xl font-bold text-cosmic-ivory mb-4">命理知識，不用花錢問</h2>
+        <p class="text-cosmic-muted max-w-2xl mx-auto">從入門到進階，了解三大系統背後的邏輯。</p>
+      </div>
+
+      <!-- Article cards grid -->
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Article 1 -->
+        <article class="glass-card rounded-2xl overflow-hidden group cursor-pointer">
+          <div class="h-1 bg-gradient-to-r from-red-500 to-yellow-500"></div>
+          <div class="p-6">
+            <div class="flex items-center gap-2 mb-3">
+              <span class="px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-500/10 text-red-400 border border-red-500/20">八字</span>
+              <span class="text-xs text-cosmic-muted">約2,400 字</span>
+            </div>
+            <h3 class="text-lg font-bold text-cosmic-ivory mb-2 group-hover:text-cosmic-gold transition">八字入門：你的日主代表什麼？</h3>
+            <p class="text-sm text-cosmic-muted leading-relaxed mb-4">
+              日主是命盤的核心。甲木人有領導力，壬水人獨立理性，乙木人柔韌適應力強。一文搞懂十天干性格特質。
+            </p>
+            <div class="flex items-center justify-between">
+              <span class="text-xs text-cosmic-muted">Alan Huang</span>
+              <span class="text-xs text-cosmic-gold group-hover:underline">閱讀更多 →</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- Article 2 -->
+        <article class="glass-card rounded-2xl overflow-hidden group cursor-pointer">
+          <div class="h-1 bg-gradient-to-r from-blue-500 to-purple-500"></div>
+          <div class="p-6">
+            <div class="flex items-center gap-2 mb-3">
+              <span class="px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-500/10 text-blue-400 border border-blue-500/20">西方占星</span>
+              <span class="text-xs text-cosmic-muted">約2,100 字</span>
+            </div>
+            <h3 class="text-lg font-bold text-cosmic-ivory mb-2 group-hover:text-cosmic-gold transition">上升星座比太陽星座更重要？</h3>
+            <p class="text-sm text-cosmic-muted leading-relaxed mb-4">
+              太陽是核心自我，上升是社交面具。同一太陽星座的人，因為上升不同，行為模式可能完全不同。了解上升星座的計算方法。
+            </p>
+            <div class="flex items-center justify-between">
+              <span class="text-xs text-cosmic-muted">Alan Huang</span>
+              <span class="text-xs text-cosmic-gold group-hover:underline">閱讀更多 →</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- Article 3 -->
+        <article class="glass-card rounded-2xl overflow-hidden group cursor-pointer">
+          <div class="h-1 bg-gradient-to-r from-amber-500 to-orange-500"></div>
+          <div class="p-6">
+            <div class="flex items-center gap-2 mb-3">
+              <span class="px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-500/10 text-amber-400 border border-amber-500/20">吠陀占星</span>
+              <span class="text-xs text-cosmic-muted">約2,800 字</span>
+            </div>
+            <h3 class="text-lg font-bold text-cosmic-ivory mb-2 group-hover:text-cosmic-gold transition">為什麼要用恒星黃道？</h3>
+            <p class="text-sm text-cosmic-muted leading-relaxed mb-4">
+              西方占星用回歸黃道，吠陀用恒星黃道，兩者相差約 24°。這是文化差異還是天文根源？解釋 Ayanamsa 的影響。
+            </p>
+            <div class="flex items-center justify-between">
+              <span class="text-xs text-cosmic-muted">Alan Huang</span>
+              <span class="text-xs text-cosmic-gold group-hover:underline">閱讀更多 →</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- Article 4 -->
+        <article class="glass-card rounded-2xl overflow-hidden group cursor-pointer">
+          <div class="h-1 bg-gradient-to-r from-cosmic-purple to-cosmic-gold"></div>
+          <div class="p-6">
+            <div class="flex items-center gap-2 mb-3">
+              <span class="px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-500/10 text-cosmic-violet border border-cosmic-purple/20">交叉驗證</span>
+              <span class="text-xs text-cosmic-muted">約3,200 字</span>
+            </div>
+            <h3 class="text-lg font-bold text-cosmic-ivory mb-2 group-hover:text-cosmic-gold transition">當八字和星座說法不同時，聽誰的？</h3>
+            <p class="text-sm text-cosmic-muted leading-relaxed mb-4">
+              三系統的目的不是招募互相矛盾，而是提供不同角度。有重疊的部分值得重視，有分歧的部分需要深入思考。如何做出平衡判斷。
+            </p>
+            <div class="flex items-center justify-between">
+              <span class="text-xs text-cosmic-muted">Alan Huang</span>
+              <span class="text-xs text-cosmic-gold group-hover:underline">閱讀更多 →</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- Article 5 -->
+        <article class="glass-card rounded-2xl overflow-hidden group cursor-pointer">
+          <div class="h-1 bg-gradient-to-r from-emerald-500 to-teal-500"></div>
+          <div class="p-6">
+            <div class="flex items-center gap-2 mb-3">
+              <span class="px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">天象預告</span>
+              <span class="text-xs text-cosmic-muted">約2,600 字</span>
+            </div>
+            <h3 class="text-lg font-bold text-cosmic-ivory mb-2 group-hover:text-cosmic-gold transition">2026 木星入巨蟹座：機會與挑戰</h3>
+            <p class="text-sm text-cosmic-muted leading-relaxed mb-4">
+              2026 年木星將進入巨蟹座，對照太歲與八字流年，這是一個關於家庭、情感與安全感的重大轉折。各星座如何把握。
+            </p>
+            <div class="flex items-center justify-between">
+              <span class="text-xs text-cosmic-muted">Alan Huang</span>
+              <span class="text-xs text-cosmic-gold group-hover:underline">閱讀更多 →</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- Article 6 -->
+        <article class="glass-card rounded-2xl overflow-hidden group cursor-pointer">
+          <div class="h-1 bg-gradient-to-r from-pink-500 to-rose-500"></div>
+          <div class="p-6">
+            <div class="flex items-center gap-2 mb-3">
+              <span class="px-2.5 py-0.5 rounded-full text-xs font-medium bg-pink-500/10 text-pink-400 border border-pink-500/20">流年指南</span>
+              <span class="text-xs text-cosmic-muted">約2,300 字</span>
+            </div>
+            <h3 class="text-lg font-bold text-cosmic-ivory mb-2 group-hover:text-cosmic-gold transition">2026 馬太歲怎麼拜？</h3>
+            <p class="text-sm text-cosmic-muted leading-relaxed mb-4">
+              乙巳年馬太歲，屬豬、虎、蛇、猴者屬安太歲。除了拜太歲，八字流年、歲破、占星行運各有不同的化解方法。一文綜合整理。
+            </p>
+            <div class="flex items-center justify-between">
+              <span class="text-xs text-cosmic-muted">Alan Huang</span>
+              <span class="text-xs text-cosmic-gold group-hover:underline">閱讀更多 →</span>
+            </div>
+          </div>
+        </article>
+      </div>
+
+      <!-- Newsletter CTA -->
+      <div class="mt-16 text-center">
+        <div class="glass-card rounded-2xl p-8 max-w-xl mx-auto">
+          <h3 class="text-xl font-bold text-cosmic-ivory mb-2">每週一則命理知識</h3>
+          <p class="text-sm text-cosmic-muted mb-6">新文章直接送到你的電子郵件，不用每天刷社群。</p>
+          <form class="flex flex-col sm:flex-row gap-3" onsubmit="event.preventDefault(); alert('謝謝訂閱！我們會在首篇文章發出時通知你。');">
+            <input type="email" placeholder="your@email.com" required class="flex-1 bg-cosmic-deep/80 border border-cosmic-purple/20 rounded-lg px-4 py-3 text-sm text-cosmic-ivory placeholder-cosmic-muted focus:outline-none focus:border-cosmic-gold/50">
+            <button type="submit" class="cta-glow px-6 py-3 rounded-lg text-sm font-semibold text-white hover:shadow-lg transition whitespace-nowrap">
+              訂閱週報
+            </button>
+          </form>
+          <p class="text-xs text-cosmic-muted mt-3">隨時取消。沒有垃圾郵件。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider-glow max-w-4xl mx-auto"></div>
+
+  <!-- CTA / Pricing Section -->
+  <section id="demo" class="relative z-10 py-24 px-4">
+    <div class="max-w-4xl mx-auto text-center">
+      <h2 class="font-serif text-3xl md:text-5xl font-bold text-cosmic-ivory mb-6">
+        生成你的<span class="gradient-text">命盤</span>
+      </h2>
+      <p class="text-lg text-cosmic-muted mb-10 max-w-2xl mx-auto">
+        輸入出生資料就能免費看三系統分析。不用註冊，不用綁卡。
+      </p>
+
+      <div class="glass-card rounded-2xl p-8 md:p-12 max-w-2xl mx-auto mb-12">
+        <a href="https://sanyuan.oilygold.xyz" target="_blank" class="cta-glow px-10 py-4 rounded-full text-lg font-bold text-white hover:shadow-2xl hover:shadow-purple-500/50 transition transform hover:scale-105 inline-block">
+          立即免費體驗
+        </a>
+        <p class="text-sm text-cosmic-muted mt-4">免費版每月 3 份命盤，不用綁卡</p>
+      </div>
+
+      <!-- Pricing cards -->
+      <div class="grid sm:grid-cols-3 gap-4 max-w-3xl mx-auto">
+        <!-- Free -->
+        <div class="glass-card rounded-xl p-6 text-center relative">
+          <div class="text-cosmic-muted text-sm mb-2">免費版</div>
+          <div class="text-3xl font-bold text-cosmic-ivory">$0</div>
+          <div class="text-xs text-cosmic-muted mb-4">永久免費</div>
+          <ul class="text-left text-sm text-cosmic-muted space-y-2 mb-6">
+            <li class="flex items-center gap-2">
+              <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+              每月 3 份命盤
+            </li>
+            <li class="flex items-center gap-2">
+              <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+              三系統基礎排盤
+            </li>
+            <li class="flex items-center gap-2">
+              <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+              行星位置計算
+            </li>
+          </ul>
+        </div>
+
+        <!-- Popular -->
+        <div class="glass-card rounded-xl p-6 text-center relative pricing-card-popular">
+          <div class="popular-badge">大家都選這個</div>
+          <div class="text-cosmic-gold text-sm mb-2">命理師</div>
+          <div class="text-3xl font-bold text-cosmic-ivory">$9<span class="text-sm text-cosmic-muted">/月</span></div>
+          <div class="text-xs text-cosmic-muted mb-4">年繳省 20%</div>
+          <ul class="text-left text-sm text-cosmic-muted space-y-2 mb-6">
+            <li class="flex items-center gap-2">
+              <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+              <span class="text-cosmic-ivory">無限命盤</span>
+            </li>
+            <li class="flex items-center gap-2">
+              <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+              合盤功能
+            </li>
+            <li class="flex items-center gap-2">
+              <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+              流年預測
+            </li>
+            <li class="flex items-center gap-2">
+              <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+              優先客服
+            </li>
+          </ul>
+        </div>
+
+        <!-- Pro -->
+        <div class="glass-card rounded-xl p-6 text-center relative">
+          <div class="text-cosmic-violet text-sm mb-2">命盤大師</div>
+          <div class="text-3xl font-bold text-cosmic-ivory">$19<span class="text-sm text-cosmic-muted">/月</span></div>
+          <div class="text-xs text-cosmic-muted mb-4">年繳省 20%</div>
+          <ul class="text-left text-sm text-cosmic-muted space-y-2 mb-6">
+            <li class="flex items-center gap-2">
+              <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+              <span class="text-cosmic-ivory">命理師全部功能</span>
+            </li>
+            <li class="flex items-center gap-2">
+              <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+              AI 智慧解讀
+            </li>
+            <li class="flex items-center gap-2">
+              <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+              1 對 1 專家諮詢（15 分/月）
+            </li>
+            <li class="flex items-center gap-2">
+              <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+              API 接取權限
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <p class="text-xs text-cosmic-muted mt-6">什麼時候都可以取消，沒有續約纏身。年付方案等於 $86/年（命理師）、$182/年（命盤大師）。</p>
+    </div>
+  </section>
+
+  <div class="divider-glow max-w-4xl mx-auto"></div>
+
+  <!-- Footer -->
+  <footer class="relative z-10 py-12 px-4">
+    <div class="max-w-6xl mx-auto">
+      <!-- Trust footer badges -->
+      <div class="flex flex-wrap justify-center gap-3 mb-10">
+        <span class="trust-footer-badge">
+          <svg class="w-3.5 h-3.5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+          SSL 加密傳輸
+        </span>
+        <span class="trust-footer-badge">
+          <svg class="w-3.5 h-3.5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+          100% 隱私保護
+        </span>
+        <span class="trust-footer-badge">
+          <svg class="w-3.5 h-3.5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          經專家命理師驗證
+        </span>
+        <span class="trust-footer-badge">
+          <svg class="w-3.5 h-3.5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          已服務 30+ 國家
+        </span>
+      </div>
+
+      <div class="flex flex-col md:flex-row justify-between items-center gap-6">
+        <div class="flex items-center gap-3">
+          <div class="w-8 h-8 rounded-full bg-gradient-to-br from-cosmic-purple to-cosmic-gold flex items-center justify-center">
+            <span class="text-white font-serif text-sm font-bold">垣</span>
+          </div>
+          <span class="font-serif text-lg font-bold gradient-text">三垣 San-Yuan</span>
+        </div>
+        <div class="flex gap-6 text-sm text-cosmic-muted">
+          <a href="https://sanyuan.oilygold.xyz" target="_blank" class="hover:text-cosmic-ivory transition">應用程式</a>
+          <a href="https://github.com/acchuang/san-yuan" target="_blank" class="hover:text-cosmic-ivory transition">GitHub</a>
+          <a href="mailto:alanhuang@me.com" class="hover:text-cosmic-ivory transition">聯絡我們</a>
+        </div>
+      </div>
+      <div class="mt-8 pt-8 border-t border-cosmic-purple/10 text-center text-sm text-cosmic-muted">
+        <p> 三垣 San-Yuan. Crafted with care in Melbourne.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Generate stars
+    const starfield = document.getElementById('starfield');
+    const starCount = 150;
+    for (let i = 0; i < starCount; i++) {
+      const star = document.createElement('div');
+      star.className = 'star';
+      star.style.left = Math.random() * 100 + '%';
+      star.style.top = Math.random() * 100 + '%';
+      star.style.animationDelay = Math.random() * 5 + 's';
+      star.style.animationDuration = (Math.random() * 3 + 2) + 's';
+      const size = Math.random() * 2 + 1;
+      star.style.width = size + 'px';
+      star.style.height = size + 'px';
+      starfield.appendChild(star);
+    }
+
+    // Mobile menu toggle
+    const menuBtn = document.getElementById('mobile-menu-btn');
+    const mobileMenu = document.getElementById('mobile-menu');
+    menuBtn.addEventListener('click', () => {
+      mobileMenu.classList.toggle('hidden');
+    });
+
+    // Smooth scroll for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          mobileMenu.classList.add('hidden');
+        }
+      });
+    });
+
+    // Close mobile menu on resize
+    window.addEventListener('resize', () => {
+      if (window.innerWidth >= 768) {
+        mobileMenu.classList.add('hidden');
+      }
+    });
+
+    // Demo preview generator
+    function generatePreview() {
+      const btn = document.getElementById('demo-generate');
+      const btnText = document.getElementById('demo-btn-text');
+      const icon = document.getElementById('demo-icon');
+      const result = document.getElementById('demo-result');
+
+      // Loading state
+      btn.disabled = true;
+      btnText.textContent = '計算中...';
+      icon.innerHTML = '<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>';
+      icon.classList.add('animate-spin');
+
+      // Simulate API delay
+      setTimeout(() => {
+        // Reset button
+        btn.disabled = false;
+        btnText.textContent = '重新生成';
+        icon.classList.remove('animate-spin');
+        icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>';
+
+        // Show result with animation
+        result.classList.remove('hidden');
+        result.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+        // Staggered fade-in for cards
+        const cards = result.querySelectorAll('.grid > div');
+        cards.forEach((card, i) => {
+          card.style.opacity = '0';
+          card.style.transform = 'translateY(12px)';
+          card.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+          setTimeout(() => {
+            card.style.opacity = '1';
+            card.style.transform = 'translateY(0)';
+          }, i * 120);
+        });
+      }, 1400);
+    }
+  </script>
+</body>
+</html>
